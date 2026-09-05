@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Hilfe und Kontakt zur App VAYA – Ruhe in Kopf &amp; Körper.">
+    <title>VAYA – Hilfe &amp; Kontakt</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --background: #f5f1eb;
+            --surface: rgba(255, 255, 255, 0.72);
+            --text: #24312e;
+            --muted: #60706b;
+            --accent: #446f68;
+            --line: rgba(36, 49, 46, 0.12);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #111816;
+                --surface: rgba(28, 39, 36, 0.88);
+                --text: #edf3f0;
+                --muted: #afc0ba;
+                --accent: #9bc9be;
+                --line: rgba(237, 243, 240, 0.12);
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        main {
+            width: min(760px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 48px 0 72px;
+        }
+
+        header, section {
+            padding: clamp(24px, 5vw, 44px);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+        }
+
+        section { margin-top: 18px; }
+        h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.08; }
+        h2 { margin: 0 0 20px; font-size: 1.6rem; }
+        h3 { margin: 28px 0 6px; font-size: 1.08rem; }
+        p { margin: 8px 0 0; }
+        .subtitle, .updated { color: var(--muted); }
+        .subtitle { font-size: 1.08rem; }
+        .updated { margin-top: 20px; font-size: 0.9rem; }
+        nav { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 28px; }
+        a { color: var(--accent); text-underline-offset: 3px; }
+        address { margin-top: 8px; font-style: normal; }
+        ul { padding-left: 1.3rem; }
+        .language-note { color: var(--muted); font-size: 0.94rem; }
+        footer { padding: 28px 8px 0; color: var(--muted); text-align: center; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<main>
+    <header>
+        <h1>Hilfe</h1>
+        <p class="subtitle">VAYA – Ruhe in Kopf &amp; Körper</p>
+        <nav aria-label="Seitennavigation">
+            <a href="#kontakt">Kontakt</a>
+            <a href="#fragen">Häufige Fragen</a>
+            <a href="#help">Help (English)</a>
+            <a href="index.html">Datenschutz &amp; Impressum</a>
+        </nav>
+        <p class="updated">Stand: 5. September 2026</p>
+    </header>
+
+    <section id="kontakt" lang="de">
+        <h2>Kontakt</h2>
+        <p>Fragen, Fehler, Wünsche: schreib einfach eine E-Mail. Es antwortet eine
+            Person, keine Warteschlange, und darum kann es ein paar Tage dauern.</p>
+        <address>
+            E-Mail: <a href="mailto:help.vaya@web.de">help.vaya@web.de</a>
+        </address>
+        <p>Hilfreich in der Nachricht, aber kein Muss: welches iPhone, welche
+            iOS-Version, welche Übung, und was du erwartet hättest.</p>
+
+        <h3>Wenn es gerade akut ist</h3>
+        <p>VAYA ist ein Übungswerkzeug und keine Behandlung. Bei anhaltender
+            Belastung wende dich an eine Ärztin oder einen Arzt oder an
+            therapeutische Begleitung. In einer akuten Krise: In Deutschland
+            erreichst du die Telefonseelsorge rund um die Uhr kostenfrei unter
+            0800 111 0 111 und 0800 111 0 222, den Rettungsdienst unter 112.</p>
+    </section>
+
+    <section id="fragen" lang="de">
+        <h2>Häufige Fragen</h2>
+
+        <h3>Wie stelle ich die Sprache um?</h3>
+        <p>In der App unter <em>Einstellungen → Sprache</em>. Zur Wahl stehen
+            System, Deutsch und English. Die Umstellung wirkt sofort, auch auf die
+            gesprochene Führung.</p>
+
+        <h3>Ich möchte keinen Ton.</h3>
+        <p>In der App unter <em>Einstellungen → Begleitung → Klang, Stimme &amp;
+            Haptik</em>. Dort lassen sich <em>Klangschalen</em>, <em>Klopf-Ton</em>
+            und die <em>Stimme</em> einzeln abschalten. Die Übungen laufen
+            vollständig ohne Ton, die Führung steht dann auf dem Bildschirm, und
+            die Vibration bleibt als Zeichen.</p>
+
+        <h3>Warum kommt Ton, obwohl mein iPhone stumm ist?</h3>
+        <p>Weil viele Menschen mit lautlosem Klingelton üben und die Anleitung
+            trotzdem hören wollen. Wenn du das nicht möchtest, schalte auf
+            demselben Bildschirm <em>Auf Stumm keine Töne</em> ein; dann
+            respektiert VAYA den Schalter. Bei eingeschaltetem Schalter beendet
+            ein gesperrter Bildschirm allerdings auch den Ton.</p>
+
+        <h3>Wo sind meine Daten?</h3>
+        <p>Auf dem Gerät. VAYA hat kein Benutzerkonto, keinen Server und keine
+            Analyse. Übungsverlauf, eigene Sätze und Einstellungen liegen lokal;
+            das Löschen der App löscht sie mit.</p>
+        <p>Einzelne eigene Sätze löschst du unter <em>Einstellungen → Apple
+            Intelligence → Eigene Sätze</em> über das Papierkorb-Zeichen neben dem
+            Satz. Einträge im Übungsverlauf über <em>Verlauf → Bearbeiten</em>.</p>
+
+        <h3>Wie kommen Übungen in Apple Health?</h3>
+        <p>Nur wenn du es einschaltest, und nur als Achtsamkeitsminuten.
+            VAYA liest nichts aus Health. Berechtigung und Einträge verwaltest du
+            jederzeit in der Health-App.</p>
+
+        <h3>Erinnerungen kommen nicht an.</h3>
+        <p>Erinnerungen werden auf dem Gerät geplant, es gibt keinen Push-Server.
+            Prüfe in den iOS-Einstellungen unter <em>Mitteilungen → VAYA</em>, ob
+            Mitteilungen erlaubt sind, und ob eine Fokus-Einstellung sie
+            zurückhält.</p>
+
+        <h3>Was ist der Rettungsring?</h3>
+        <p>Eine feste Reihe von neunzig Sekunden für Momente, in denen Auswählen
+            zu viel ist: zwei physiologische Seufzer, ein langer Ausatem, ein paar
+            Sätze. Er liegt auf dem Startbildschirm unter den Übungen, braucht
+            keine Auswahl und lässt sich jederzeit beenden.</p>
+
+        <h3>Muss ich die Übungen zu Ende machen?</h3>
+        <p>Nein. Aufhören ist Teil der Übung, nicht ihr Abbruch. Jede Übung hat
+            einen sichtbaren Ausgang, und was du bis dahin geübt hast, zählt.</p>
+
+        <h3>Was ist VAYA nicht?</h3>
+        <p>Keine Diagnose, keine Therapie, kein Medizinprodukt. VAYA misst nichts,
+            leitet nichts ab und stellt nichts fest. Sie führt durch Übungen zum
+            Atmen, Klopfen, Orientieren und durch Körperübungen — mehr behauptet
+            sie nicht.</p>
+    </section>
+
+    <section id="help" lang="en">
+        <h2>Help</h2>
+        <p class="language-note">This English version is provided for users of the
+            English app localization.</p>
+
+        <h3>Contact</h3>
+        <p>Questions, bugs, requests: just send an email. One person answers, not
+            a queue, so it can take a few days.</p>
+        <address>
+            Email: <a href="mailto:help.vaya@web.de">help.vaya@web.de</a>
+        </address>
+        <p>Useful but not required: which iPhone, which iOS version, which
+            exercise, and what you expected to happen.</p>
+
+        <h3>If things are acute right now</h3>
+        <p>VAYA is a practice tool, not treatment. If distress persists, please
+            see a doctor or seek therapeutic support. In an acute crisis, contact
+            your local emergency number. In Germany, Telefonseelsorge is free and
+            available around the clock on 0800 111 0 111 and 0800 111 0 222, and
+            emergency services on 112.</p>
+
+        <h3>How do I change the language?</h3>
+        <p>In the app under <em>Settings → Language</em>: System, Deutsch or
+            English. The change takes effect immediately, including the spoken
+            guidance.</p>
+
+        <h3>I do not want sound.</h3>
+        <p>In the app under <em>Settings → Guidance → Sound, voice &amp;
+            haptics</em>. There you can turn <em>Singing bowls</em>,
+            <em>Tapping tone</em> and the <em>Voice</em> off separately. The
+            exercises run fully without sound; the guidance is on screen and the
+            haptics remain as a cue.</p>
+
+        <h3>Why is there sound while my iPhone is silenced?</h3>
+        <p>Because many people practise with the ringer off and still want to hear
+            the guidance. If you would rather not, enable <em>No sound on
+            silent</em> on the same screen. With that on, a locked screen also
+            ends the sound.</p>
+
+        <h3>Where is my data?</h3>
+        <p>On the device. VAYA has no account, no server and no analytics.
+            Exercise history, your own sentences and settings are stored locally;
+            deleting the app deletes them.</p>
+        <p>To delete one of your own sentences, go to <em>Settings → Apple
+            Intelligence → Your own sentences</em> and use the bin icon next to
+            it. History entries can be removed under <em>History → Edit</em>.</p>
+
+        <h3>How do exercises get into Apple Health?</h3>
+        <p>Only if you switch it on, and only as mindful minutes. VAYA reads
+            nothing from Health. You can manage permission and entries in the
+            Health app at any time.</p>
+
+        <h3>Reminders do not arrive.</h3>
+        <p>Reminders are scheduled on the device; there is no push server. Check
+            iOS <em>Settings → Notifications → VAYA</em> for permission, and
+            whether a Focus mode is holding them back.</p>
+
+        <h3>What is the emergency anchor?</h3>
+        <p>A fixed ninety-second sequence for moments when choosing is too much:
+            two physiological sighs, one long exhale, a few sentences. It sits on
+            the home screen below the exercises, requires no choices, and can be
+            ended at any time.</p>
+
+        <h3>Do I have to finish an exercise?</h3>
+        <p>No. Stopping is part of the practice, not a failure at it. Every
+            exercise has a visible way out, and what you practised until then
+            counts.</p>
+
+        <h3>What VAYA is not</h3>
+        <p>Not a diagnosis, not therapy, not a medical device. VAYA measures
+            nothing, infers nothing and determines nothing. It guides breathing,
+            tapping, orienting and body exercises — it claims no more than that.</p>
+    </section>
+
+    <footer>VAYA · Ruhe in Kopf &amp; Körper · <a href="index.html">Datenschutz &amp; Impressum</a></footer>
+</main>
+</body>
+</html>
