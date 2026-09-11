@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<!-- Meta-Tags stehen bewusst ganz oben, vor jedem Inline-Block: WhatsApp liest
+     beim Erzeugen der Vorschau nur die ersten 300 KB des HTML, und diese Datei
+     trägt Stil und Logik inline. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Neunzig Sekunden · VAYA</title>
+<meta name="description" content="Eine geführte Übung. Neunzig Sekunden, direkt im Browser. Ohne Konto, ohne Installation.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Neunzig Sekunden">
+<meta property="og:description" content="Eine geführte Übung, direkt hier. Ohne Konto, ohne Installation.">
+<meta property="og:url" content="https://vaya-cloud.github.io/vaya-privacy/rettungsring/">
+<!-- Genau ein og:image. 1200x630 JPEG, 37 KB, absolute URL, keine
+     Weiterleitung. Das Bild muss erreichbar sein, BEVOR die URL das erste Mal
+     irgendwo geteilt wird: WhatsApp merkt sich einen Fehlschlag rund sieben
+     Tage und es gibt keinen öffentlichen Debugger. -->
+<meta property="og:image" content="https://vaya-cloud.github.io/vaya-privacy/rettungsring/vorschau.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+    :root {
+        color-scheme: light dark;
+        --background: #f5f1eb;
+        --surface: rgba(255, 255, 255, 0.72);
+        --text: #24312e;
+        --muted: #60706b;
+        --accent: #446f68;
+        --line: rgba(36, 49, 46, 0.12);
+        --orb: #cf9d84;
+        --orb-glow: rgba(207, 157, 132, 0.28);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --background: #111816;
+            --surface: rgba(28, 39, 36, 0.88);
+            --text: #edf3f0;
+            --muted: #afc0ba;
+            --accent: #9bc9be;
+            --line: rgba(237, 243, 240, 0.12);
+            --orb: #b98167;
+            --orb-glow: rgba(185, 129, 103, 0.24);
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+        margin: 0;
+        background: var(--background);
+        color: var(--text);
+        font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        flex-direction: column;
+        min-height: 100svh;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: min(560px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 32px 0;
+    }
+
+    .screen { display: none; width: 100%; }
+    .screen.is-active { display: block; }
+
+    h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 9vw, 2.8rem);
+        font-weight: 250;
+        letter-spacing: -0.01em;
+        line-height: 1.1;
+    }
+
+    .lead {
+        margin: 0 auto 34px;
+        max-width: 30rem;
+        color: var(--muted);
+        font-size: 1.05rem;
+    }
+
+    button {
+        font: inherit;
+        cursor: pointer;
+        border: 0;
+        border-radius: 999px;
+        padding: 16px 34px;
+        background: var(--accent);
+        color: var(--background);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    button.quiet {
+        background: transparent;
+        color: var(--muted);
+        /* Mindestens 44 Punkte hoch, auch wenn das Wort klein ist. */
+        min-height: 44px;
+        padding: 12px 18px;
+        font-weight: 400;
+        font-size: 0.95rem;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        border-radius: 12px;
+    }
+
+    /* Ein sichtbarer Fokusring, sonst ist die Seite mit der Tastatur nicht
+       bedienbar. Nur bei Tastaturfokus, damit ein Tipp keinen Rahmen hinterlässt. */
+    button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+    }
+
+    .note {
+        margin-top: 22px;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+
+    /* Der Orb. Skalierung und Dauer werden pro Phase per JS gesetzt, die Dauer
+       entspricht der Länge der Phase, damit Bild und Atem zusammenfallen statt
+       nacheinander zu laufen. */
+    .orb-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: min(52vh, 320px);
+        margin-bottom: 28px;
+    }
+
+    .orb {
+        width: min(52vw, 210px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle at 38% 34%, color-mix(in srgb, var(--orb) 70%, white), var(--orb) 68%);
+        box-shadow: 0 0 70px 24px var(--orb-glow);
+        transform: scale(0.62);
+        transition: transform linear;
+        transition-duration: 0ms;
+        will-change: transform;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        /* Die Skalierung bleibt. Sie ist hier nicht Dekoration, sondern die
+           Anleitung: ohne sie hat man acht Sekunden lang keinen Anhaltspunkt,
+           wie weit die Ausatmung ist. Eine langsame, gleichmäßige Größenänderung
+           ist kein vestibulärer Reiz. Was geht, ist das, was tatsächlich flackert:
+           der weite Schein und die Compositing-Reservierung. */
+        .orb {
+            box-shadow: none;
+            will-change: auto;
+        }
+    }
+
+    .cue-title {
+        font-size: clamp(1.7rem, 7vw, 2.3rem);
+        font-weight: 250;
+        margin: 0 0 8px;
+        line-height: 1.15;
+        /* Zwei Zeilen reserviert: sonst wandert bei einem einzeiligen Titel
+           alles darunter nach oben, und der Orb wandert mit. */
+        min-height: 2.3em;
+    }
+
+    .cue-detail {
+        margin: 0 auto;
+        max-width: 26rem;
+        color: var(--muted);
+        /* Feste Höhe, nicht min-height. Vier Zeilen fassen die längste Fassung
+           in beiden Sprachen auf dem schmalsten Telefon. Mit min-height sprang
+           der ganze mittig zentrierte Block bei jedem Cue-Wechsel um bis zu drei
+           Zeilen, und eine Atemführung, deren Anker springt, führt nichts. */
+        height: 6.4em;
+    }
+
+    .track {
+        width: min(240px, 60%);
+        height: 2px;
+        margin: 22px auto 0;
+        background: var(--line);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .track span {
+        display: block;
+        height: 100%;
+        width: 100%;
+        background: var(--accent);
+        opacity: 0.55;
+        /* transform statt width: das läuft im Compositor und löst nicht bei
+           jedem Frame ein Layout aus. */
+        transform: scaleX(0);
+        transform-origin: left center;
+    }
+
+    .run-controls { margin-top: 10px; }
+
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 28px 26px;
+        text-align: left;
+    }
+
+    .card p { margin: 0 0 12px; }
+    .card p:last-child { margin-bottom: 0; }
+
+    a { color: var(--accent); text-underline-offset: 3px; }
+
+    footer {
+        padding: 18px 20px calc(18px + env(safe-area-inset-bottom));
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.82rem;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    footer button.quiet {
+        min-height: 0;
+        padding: 8px 10px;
+        font-size: 0.82rem;
+        color: var(--muted);
+    }
+
+    .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+    .stack > * + * { margin-top: 18px; }
+</style>
+</head>
+<body>
+<main>
+
+    <!-- 1. Start. Ein eigener Bildschirm, kein Autoplay-Versuch.
+         Der Tap auf die QR-Benachrichtigung der Kamera zählt nicht als
+         Nutzeraktivierung, Ton braucht also ohnehin eine Geste hier. Dass die
+         Person selbst entscheidet, wann es losgeht, ist zusätzlich der
+         richtige Einstieg. -->
+    <section class="screen is-active" id="screen-start">
+        <h1 data-t="startTitle">Neunzig Sekunden</h1>
+        <p class="lead" data-t="startLead">Du nimmst dir jetzt anderthalb Minuten. Kein Konto, keine Installation, nichts wird gespeichert.</p>
+        <div class="row">
+            <button id="start" data-t="startButton">Anfangen</button>
+        </div>
+        <p class="note" data-t="startNote">Mit Ton ist es leichter. Es geht auch vollständig ohne, der Text führt genauso.</p>
+    </section>
+
+    <!-- 2. Die Übung. -->
+    <section class="screen" id="screen-run">
+        <div class="orb-wrap"><div class="orb" id="orb"></div></div>
+        <!-- aria-live am gemeinsamen Elternelement, damit VoiceOver Titel und
+             Detail als einen Satz ansagt statt als zwei Unterbrechungen. -->
+        <div aria-live="polite" aria-atomic="true">
+            <h2 class="cue-title" id="cue-title">&nbsp;</h2>
+            <p class="cue-detail" id="cue-detail">&nbsp;</p>
+        </div>
+        <div class="track"><span id="progress"></span></div>
+        <div class="row run-controls">
+            <!-- WCAG 2.2.2: alles, was sich länger als fünf Sekunden von selbst
+                 bewegt oder aktualisiert, braucht einen Weg zum Anhalten. Hier
+                 ist es zusätzlich schlicht nötig, weil neunzig Sekunden ohne
+                 Ausgang eine Zumutung sind. -->
+            <button class="quiet" id="stop" data-t="stopButton">Anhalten</button>
+        </div>
+    </section>
+
+    <!-- 3. Schluss. Der App-Store-Link steht erst hier, nie davor. -->
+    <section class="screen" id="screen-end">
+        <div class="card stack">
+            <div>
+                <h1 data-t="endTitle">Das war sie.</h1>
+                <p class="lead" style="margin-bottom:0" data-t="endLead">Wenn du magst, noch einmal. Zweimal hintereinander ist bei vielen erst der Punkt, an dem es kippt.</p>
+            </div>
+            <div class="row">
+                <button id="again" data-t="againButton">Noch einmal</button>
+            </div>
+            <p data-t="endBody">Diese Übung kommt aus VAYA. In der App führt eine echte Stimme durch sie, dazu Klangschalen und der Takt in der Hand. Es gibt dort Atemübungen, Klopfen und Körperübungen, alles kostenlos, ohne Konto und ohne Werbung.</p>
+            <p><a id="store" href="https://apps.apple.com/de/app/id6809305804" data-t="storeLink">VAYA im App Store ansehen</a></p>
+        </div>
+        <p class="note" data-t="endNote">Diese Seite braucht kein Konto, misst nichts und setzt keine Cookies. Was du hier tust, bleibt in deinem Browser. Dass sie geladen wurde, sieht der Hoster, wie bei jeder Webseite.</p>
+    </section>
+
+</main>
+
+<footer>
+    <span data-t="footerText">Eine Übung aus VAYA.</span>
+    <!-- Pflicht, nicht Kür: diese Seite hat eine eigene, öffentlich verteilte
+         Adresse und muss von dort aus in zwei Klicks zu Impressum und
+         Datenschutzerklärung führen. Beides steht eine Ebene höher. -->
+    <a href="../" id="legal" data-t="legalLink">Datenschutz und Impressum</a>
+    <!-- Ein Knopf, kein Link: hier wird nichts navigiert, und VoiceOver
+         kündigte einen Link an, dessen Ziel # war. Das lang-Attribut sorgt
+         dafür, dass "English" englisch ausgesprochen wird. -->
+    <button class="quiet" id="lang" type="button" lang="en">English</button>
+</footer>
+
+<script>
+(function () {
+    "use strict";
+
+    // ---------------------------------------------------------------
+    // Inhalt. Wortgleich mit EmergencyAnchor.cues in BodyContent.swift,
+    // die englischen Fassungen wortgleich mit Localizable.xcstrings.
+    // Wer hier etwas ändert, muss es dort mitändern, sonst sagt die Seite
+    // etwas anderes als die App.
+    //
+    // 9 + 3.5 + 2.5 + 8 + 3.5 + 2.5 + 8 + 16 + 13 + 4 + 8 + 12 = 90 Sekunden.
+    //
+    // `to` ist die Zielgröße des Orbs für diesen Cue. Sie steht pro Cue und
+    // nicht pro Atemrichtung, weil der physiologische Seufzer sonst nicht
+    // funktioniert: Einatmen und das kurze Nachatmen sind beide `in`, und mit
+    // einem gemeinsamen Ziel stand der Orb während des Aufsatz-Zugs still,
+    // also ausgerechnet in der Phase, die den Seufzer ausmacht.
+    // ---------------------------------------------------------------
+    var CUES = [
+        { s: 9,   to: 0.62, bowl: true,
+                  de: ["Füße auf den Boden", "Beide Sohlen flach. Du bist hier."],
+                  en: ["Feet on the floor", "Both soles flat. You are here."] },
+        { s: 3.5, to: 0.90, bowl: true,
+                  de: ["Einatmen", "Durch die Nase."],
+                  en: ["Inhale", "Through your nose."] },
+        { s: 2.5, to: 1.00,
+                  de: ["Kurz nachatmen", "Noch ein kleiner Zug oben drauf."],
+                  en: ["A short second breath", "One more small sip on top."] },
+        { s: 8,   to: 0.62,
+                  de: ["Lang ausatmen", "Durch den Mund, ohne Druck."],
+                  en: ["Long exhale", "Through your mouth, without force."] },
+        { s: 3.5, to: 0.90, bowl: true,
+                  de: ["Einatmen", "Durch die Nase."],
+                  en: ["Inhale", "Through your nose."] },
+        { s: 2.5, to: 1.00,
+                  de: ["Kurz nachatmen", "Noch ein kleiner Zug."],
+                  en: ["A short second breath", "One more small sip."] },
+        { s: 8,   to: 0.62,
+                  de: ["Lang ausatmen", "Alles heraus."],
+                  en: ["Long exhale", "Everything out."] },
+        { s: 16,  to: 0.72,
+                  de: ["Umschauen", "Lass den Blick langsam durch den Raum wandern. Benenne drei Dinge, die du siehst."],
+                  en: ["Looking around", "Let your gaze move slowly through the room. Name three things you see."] },
+        { s: 13,  to: 0.72,
+                  de: ["Hand aufs Herz", "Spüre die Wärme deiner Hand. Wenn Berührung unangenehm ist: Hände auf die Oberschenkel."],
+                  en: ["Hand on your heart", "Feel the warmth of your hand. If touch is unpleasant: hands on your thighs."] },
+        { s: 4,   to: 0.95,
+                  de: ["Einatmen", "Ruhig."],
+                  en: ["Inhale", "Calmly."] },
+        { s: 8,   to: 0.62,
+                  de: ["Lang ausatmen", "Doppelt so lang."],
+                  en: ["Long exhale", "Twice as long."] },
+        { s: 12,  to: 0.72, bowl: true,
+                  de: ["Und jetzt", "Die Welle war da. Wenn sie noch nicht durch ist, geh sie noch einmal. Das ist keine Niederlage."],
+                  en: ["And now", "The wave was here. If it has not passed yet, go through it once more. That is not a defeat."] }
+    ];
+
+    var COPY = {
+        de: {
+            startTitle: "Neunzig Sekunden",
+            startLead: "Du nimmst dir jetzt anderthalb Minuten. Kein Konto, keine Installation, nichts wird gespeichert.",
+            startButton: "Anfangen",
+            startNote: "Mit Ton ist es leichter. Es geht auch vollständig ohne, der Text führt genauso.",
+            stopButton: "Anhalten",
+            endTitle: "Das war sie.",
+            endLead: "Wenn du magst, noch einmal. Zweimal hintereinander ist bei vielen erst der Punkt, an dem es kippt.",
+            againButton: "Noch einmal",
+            endBody: "Diese Übung kommt aus VAYA. In der App führt eine echte Stimme durch sie, dazu Klangschalen und der Takt in der Hand. Es gibt dort Atemübungen, Klopfen und Körperübungen, alles kostenlos, ohne Konto und ohne Werbung.",
+            storeLink: "VAYA im App Store ansehen",
+            endNote: "Diese Seite braucht kein Konto, misst nichts und setzt keine Cookies. Was du hier tust, bleibt in deinem Browser. Dass sie geladen wurde, sieht der Hoster, wie bei jeder Webseite.",
+            footerText: "Eine Übung aus VAYA.",
+            legalLink: "Datenschutz und Impressum",
+            other: "English",
+            title: "Neunzig Sekunden · VAYA"
+        },
+        en: {
+            startTitle: "Ninety seconds",
+            startLead: "You are giving yourself a minute and a half. No account, nothing to install, nothing is stored.",
+            startButton: "Begin",
+            startNote: "Sound makes it easier. It works fine without it too, the text guides just as well.",
+            stopButton: "Stop",
+            endTitle: "That was it.",
+            endLead: "Go again if you want to. For many people the second round is where it turns.",
+            againButton: "Once more",
+            endBody: "This practice comes from VAYA. In the app a real voice guides you through it, with singing bowls and a soft pulse you feel in your hand. There are breathing practices, tapping and body practices, all free, no account, no ads.",
+            storeLink: "See VAYA on the App Store",
+            endNote: "This page needs no account, measures nothing and sets no cookies. What you do here stays in your browser. That it was loaded is visible to the host, as with any website.",
+            footerText: "A practice from VAYA.",
+            legalLink: "Privacy and imprint",
+            other: "Deutsch",
+            title: "Ninety seconds · VAYA"
+        }
+    };
+
+    var lang = (navigator.language || "de").toLowerCase().indexOf("de") === 0 ? "de" : "en";
+
+    var $ = function (id) { return document.getElementById(id); };
+    var orb = $("orb"), cueTitle = $("cue-title"), cueDetail = $("cue-detail"), progress = $("progress");
+
+    function applyLanguage() {
+        var c = COPY[lang];
+        document.documentElement.lang = lang;
+        document.title = c.title;
+        var nodes = document.querySelectorAll("[data-t]");
+        for (var i = 0; i < nodes.length; i++) {
+            var key = nodes[i].getAttribute("data-t");
+            if (c[key]) { nodes[i].textContent = c[key]; }
+        }
+        var toggle = $("lang");
+        toggle.textContent = c.other;
+        toggle.lang = lang === "de" ? "en" : "de";
+        $("store").href = lang === "de"
+            ? "https://apps.apple.com/de/app/id6809305804"
+            : "https://apps.apple.com/app/id6809305804";
+    }
+
+    function show(which) {
+        var screens = document.querySelectorAll(".screen");
+        for (var i = 0; i < screens.length; i++) { screens[i].classList.remove("is-active"); }
+        $(which).classList.add("is-active");
+    }
+
+    // ---------------------------------------------------------------
+    // Klang. Additiv synthetisiert, keine einzige Audiodatei: die Seite lädt
+    // dadurch in einem Zug und die Sprachaufnahmen der App bleiben, wo sie
+    // hingehören, nämlich in der App.
+    //
+    // Eine Klangschale hat inharmonische Teiltöne, deshalb keine PeriodicWave
+    // (die kann nur ganzzahlige Vielfache). Jeder Teilton bekommt eine eigene
+    // Abklingzeit, tief lang und hoch kurz, sonst klingt es nach Orgelakkord.
+    // Und jeder besteht aus zwei leicht verstimmten Oszillatoren: eine echte
+    // Schale ist nie ganz symmetrisch, jede Mode spaltet sich in zwei Peaks,
+    // und diese Schwebung ist das, was man als "Schale" erkennt.
+    // ---------------------------------------------------------------
+    var PARTIALS = [
+        { ratio: 1,      gain: 0.50, decay: 7.0, detune: 0.6 },
+        { ratio: 2.756,  gain: 0.30, decay: 4.5, detune: 1.1 },
+        { ratio: 5.017,  gain: 0.15, decay: 2.6, detune: 1.7 },
+        { ratio: 8.2,    gain: 0.07, decay: 1.5, detune: 2.3 },
+        { ratio: 12.3,   gain: 0.04, decay: 0.9, detune: 3.0 }
+    ];
+    var ROOT = 236; // Hz, gemessene Grundfrequenz einer echten Schale.
+
+    var ctx = null, master = null, keepAlive = null, soundOn = false;
+
+    function initAudio() {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) { return false; }
+        try {
+            // Muss VOR dem Erzeugen des Kontexts stehen. Ohne das verhält sich
+            // die Sitzung wie "ambient" und der Klingelton-Stummschalter legt
+            // Web Audio still, auch nach der Nutzergeste.
+            if ("audioSession" in navigator) { navigator.audioSession.type = "playback"; }
+            ctx = new AC();
+            master = ctx.createGain();
+            master.gain.value = 0.9;
+            master.connect(ctx.destination);
+            return true;
+        } catch (e) {
+            ctx = null;
+            return false;
+        }
+    }
+
+    // Ein unhörbarer Dauerton hält den Kontext wach. iOS suspendiert ihn sonst
+    // zwischen Nutzergesten wieder, und diese Übung läuft neunzig Sekunden
+    // lang ohne eine einzige. Er wird beim Ende gestoppt, sonst bleibt er über
+    // die Übung hinaus stehen und hält die Audio-Sitzung offen.
+    function startKeepAlive() {
+        if (!ctx || keepAlive) { return; }
+        keepAlive = ctx.createOscillator();
+        var g = ctx.createGain();
+        g.gain.value = 0.0001;
+        keepAlive.frequency.value = 40;
+        keepAlive.connect(g).connect(ctx.destination);
+        keepAlive.start();
+    }
+
+    function stopKeepAlive() {
+        if (!keepAlive) { return; }
+        try { keepAlive.stop(); } catch (e) { /* schon gestoppt */ }
+        keepAlive.disconnect();
+        keepAlive = null;
+    }
+
+    function strike() {
+        if (!ctx || !soundOn) { return; }
+        if (ctx.state === "suspended") { ctx.resume(); }
+        var t = ctx.currentTime;
+        for (var i = 0; i < PARTIALS.length; i++) {
+            var p = PARTIALS[i];
+            for (var d = -1; d <= 1; d += 2) {
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.type = "sine";
+                osc.frequency.value = ROOT * p.ratio + d * p.detune;
+                gain.gain.setValueAtTime(0.0001, t);
+                gain.gain.exponentialRampToValueAtTime(p.gain * 0.5, t + 0.012);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
+                osc.connect(gain).connect(master);
+                osc.start(t);
+                osc.stop(t + p.decay + 0.1);
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Bildschirm wachhalten. Ohne das sperrt das Telefon mitten in einer
+    // Übung, die neunzig Sekunden lang absichtlich keine Berührung verlangt:
+    // bei Auto-Lock nach dreißig Sekunden ist bei Cue 5 Schluss, rAF steht und
+    // die zweite Hälfte findet nie statt.
+    // ---------------------------------------------------------------
+    var wakeLock = null;
+
+    function requestWakeLock() {
+        if (!("wakeLock" in navigator)) { return; }
+        navigator.wakeLock.request("screen").then(function (lock) {
+            wakeLock = lock;
+        }).catch(function () { /* verweigert, dann eben nicht */ });
+    }
+
+    function releaseWakeLock() {
+        if (!wakeLock) { return; }
+        var lock = wakeLock;
+        wakeLock = null;
+        lock.release().catch(function () {});
+    }
+
+    // ---------------------------------------------------------------
+    // Ablauf. Ein einziger rAF-Ticker auf performance.now(), keine Kette aus
+    // setTimeout: die driftet über neunzig Sekunden sichtbar, und der Atem
+    // wäre am Ende neben dem Text.
+    // ---------------------------------------------------------------
+    var total = CUES.reduce(function (sum, c) { return sum + c.s; }, 0);
+    var startedAt = 0, index = -1, running = false, pausedAt = 0;
+    // Die laufende Frame-Anforderung, damit sie abbestellt werden kann. Ohne
+    // das lief nach jedem Wechsel in den Hintergrund eine Schleife mehr: der
+    // hidden-Zweig setzte nur `running` auf false, die alte Anforderung stand
+    // aber weiter aus, und beim Zurückkommen kam eine zweite dazu.
+    var frame = 0;
+
+    function cancelFrame() {
+        if (frame) { cancelAnimationFrame(frame); frame = 0; }
+    }
+
+    /// Nur Text und Orb. Getrennt von `enterCue`, weil ein Sprachwechsel den
+    /// Text neu setzen muss, ohne die Klangschale ein zweites Mal anzuschlagen:
+    /// wer während des Eröffnungsgongs auf "English" tippt, bekam sonst einen
+    /// zweiten Anschlag mit voller Amplitude über den ersten.
+    function renderText(i) {
+        var cue = CUES[i];
+        var text = cue[lang];
+        cueTitle.textContent = text[0];
+        cueDetail.textContent = text[1];
+    }
+
+    function renderOrb(i, animated) {
+        var cue = CUES[i];
+        orb.style.transitionDuration = animated ? (cue.s * 1000) + "ms" : "0ms";
+        orb.style.transform = "scale(" + cue.to + ")";
+    }
+
+    function enterCue(i) {
+        renderText(i);
+        renderOrb(i, true);
+        if (CUES[i].bowl) { strike(); }
+    }
+
+    function tick() {
+        if (!running) { return; }
+        var elapsed = (performance.now() - startedAt) / 1000;
+        progress.style.transform = "scaleX(" + Math.min(1, elapsed / total) + ")";
+
+        if (elapsed >= total) { finish(); return; }
+
+        var acc = 0, target = CUES.length - 1;
+        for (var i = 0; i < CUES.length; i++) {
+            acc += CUES[i].s;
+            if (elapsed < acc) { target = i; break; }
+        }
+        if (target !== index) { index = target; enterCue(index); }
+        frame = requestAnimationFrame(tick);
+    }
+
+    function begin() {
+        if (running) { return; }
+        // Alles, was Audio betrifft, passiert synchron in dieser Geste.
+        // Ein await oder setTimeout davor verliert die Nutzeraktivierung und
+        // iOS verweigert den Ton danach stillschweigend.
+        if (!ctx) { soundOn = initAudio(); }
+        if (ctx) {
+            if (ctx.state === "suspended") { ctx.resume(); }
+            soundOn = true;
+            startKeepAlive();
+        }
+        requestWakeLock();
+
+        show("screen-run");
+        running = true;
+        pausedAt = 0;
+        startedAt = performance.now();
+        index = 0;
+        // Ohne Animation in die Ausgangsgröße, danach läuft der erste Cue.
+        // Ein Element, das gerade erst aus display:none kommt, animiert seinen
+        // ersten Wechsel sonst gar nicht.
+        renderOrb(0, false);
+        renderText(0);
+        if (CUES[0].bowl) { strike(); }
+        cancelFrame();
+        frame = requestAnimationFrame(tick);
+    }
+
+    function halt() {
+        running = false;
+        cancelFrame();
+        stopKeepAlive();
+        releaseWakeLock();
+    }
+
+    function finish() {
+        halt();
+        progress.style.transform = "scaleX(1)";
+        show("screen-end");
+    }
+
+    function abort() {
+        halt();
+        index = -1;
+        pausedAt = 0;
+        progress.style.transform = "scaleX(0)";
+        show("screen-start");
+        // Fokus zurück auf den Anfangen-Knopf, sonst steht er nach dem
+        // Verschwinden des Anhalten-Knopfes im Nichts.
+        $("start").focus();
+    }
+
+    // Verlässt jemand die Seite, steht rAF, die Wanduhr aber nicht. Ohne das
+    // hier rechnete der erste Tick nach der Rückkehr die verlorene Zeit mit,
+    // sprang mehrere Cues weiter und riss den Orb mit. Jetzt wird angehalten
+    // und beim Zurückkommen an derselben Stelle weitergemacht.
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            if (!running) { return; }
+            running = false;
+            cancelFrame();
+            pausedAt = performance.now();
+        } else if (pausedAt) {
+            startedAt += performance.now() - pausedAt;
+            pausedAt = 0;
+            running = true;
+            // iOS gibt den Wake Lock beim Verstecken selbst frei.
+            requestWakeLock();
+            cancelFrame();
+            frame = requestAnimationFrame(tick);
+        }
+    });
+
+    // Nur `click`. Auf einem echten <button> feuert das auf iOS zuverlässig
+    // und zählt als Nutzeraktivierung; ein zusätzlicher touchend-Handler
+    // hätte denselben Start zweimal ausgelöst.
+    $("start").addEventListener("click", begin);
+    $("again").addEventListener("click", begin);
+    $("stop").addEventListener("click", abort);
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && running) { abort(); }
+    });
+
+    $("lang").addEventListener("click", function () {
+        lang = lang === "de" ? "en" : "de";
+        applyLanguage();
+        // Nur der Text. Der Orb behält seine laufende Transition, und die
+        // Klangschale bleibt still.
+        if (index >= 0 && running) { renderText(index); }
+    });
+
+    applyLanguage();
+}());
+</script>
+</body>
+</html>
