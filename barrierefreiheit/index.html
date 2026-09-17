@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Wie VAYA mit VoiceOver, großer Schrift, Kontrast und reduzierter Bewegung umgeht.">
+<title>VAYA – Barrierefreiheit</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Barrierefreiheit in VAYA">
+<meta property="og:description" content="VoiceOver, große Schrift, Kontrast, reduzierte Bewegung, und was noch fehlt.">
+<meta property="og:url" content="https://vaya-cloud.github.io/vaya-privacy/barrierefreiheit/">
+<style>
+    :root {
+        color-scheme: light dark;
+        --background: #f5f1eb;
+        --surface: rgba(255, 255, 255, 0.72);
+        --text: #24312e;
+        --muted: #60706b;
+        --accent: #446f68;
+        --line: rgba(36, 49, 46, 0.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --background: #111816;
+            --surface: rgba(28, 39, 36, 0.88);
+            --text: #edf3f0;
+            --muted: #afc0ba;
+            --accent: #9bc9be;
+            --line: rgba(237, 243, 240, 0.12);
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: var(--background);
+        color: var(--text);
+        font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+        width: min(760px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+    }
+
+    header, section {
+        padding: clamp(24px, 5vw, 44px);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+    }
+
+    section { margin-top: 18px; }
+    h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.08; }
+    h2 { margin: 0 0 20px; font-size: 1.6rem; }
+    h3 { margin: 28px 0 6px; font-size: 1.08rem; }
+    p { margin: 8px 0 0; }
+    .subtitle, .updated { color: var(--muted); }
+    .subtitle { font-size: 1.08rem; }
+    .updated { margin-top: 20px; font-size: 0.9rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 28px; }
+    a { color: var(--accent); text-underline-offset: 3px; }
+    ul { padding-left: 1.3rem; margin: 8px 0 0; }
+    li { margin-top: 6px; }
+
+    /* Die Zeichnungen sind Template-Grafiken wie in der App: schwarz auf
+       durchsichtig. Als Maske eingesetzt nehmen sie die Textfarbe an und
+       stimmen damit in beiden Erscheinungen, statt im Dunkeln zu verschwinden. */
+    .mark {
+        height: 132px;
+        margin: 0 0 18px;
+        background-color: var(--accent);
+        -webkit-mask: var(--mark) left center / contain no-repeat;
+        mask: var(--mark) left center / contain no-repeat;
+    }
+
+    /* Ohne Maskenunterstützung stünde dort ein Farbklotz. Dann lieber nichts. */
+    @supports not ((-webkit-mask: url(a) center / contain no-repeat) or (mask: url(a) center / contain no-repeat)) {
+        .mark { display: none; }
+    }
+
+    @media (max-width: 520px) {
+        table, thead, tbody, tr, th, td { display: block; }
+        thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+        tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+        td { border: 0; padding: 2px 0; }
+        td:first-child { font-weight: 600; }
+        td:last-child { color: var(--muted); }
+    }
+    footer { padding: 28px 8px 0; color: var(--muted); text-align: center; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+    <header>
+        <div class="mark" role="img" aria-label="Zeichnung: ein Augenpaar, ruhig geöffnet" style="--mark: url(../bilder/augen.png)"></div>
+        <h1>Barrierefreiheit</h1>
+        <p class="subtitle">Was geht, und was noch nicht</p>
+        <nav aria-label="Seitennavigation">
+            <a href="#de">Deutsch</a>
+            <a href="#en">English</a>
+        </nav>
+        <p class="updated">Stand: 17. September 2026</p>
+    </header>
+
+    <section id="de" lang="de">
+        <h2>Deutsch</h2>
+        <p>Barrierefreiheit ist in VAYA Teil des Entwurfs, kein Durchgang am Schluss. Die App ist dafür gebaut, dass du die Augen schließen kannst.</p>
+
+        <h3>VoiceOver</h3>
+        <p>Jeder Schrittwechsel während einer Übung wird angesagt, auch wenn die Sprachbegleitung ausgeschaltet ist. Ohne das wären geführte Minuten für alle stumm, die nicht auf den Bildschirm sehen. Regler, Auswahllisten und das Klopfdiagramm haben eigene Beschreibungen, keine automatischen.</p>
+
+        <h3>Große Schrift</h3>
+        <p>Jeder Bildschirm folgt der Systemschriftgröße, auch die zeitgesteuerten Übungen. Bei den größten Einstellungen wird umgebaut statt abgeschnitten: Die Läufer werden scrollbar, feste Höhen fallen weg.</p>
+
+        <h3>Kontrast und Farbe</h3>
+        <p>Die Oberflächenfarben der App sind für Flächen gedacht und nicht für Text. Deshalb gibt es eine zweite, dunklere Reihe derselben Farbtöne allein für Schrift, und die Werte sind gerechnet, nicht geschätzt. Keine Information hängt allein an Farbe.</p>
+
+        <h3>Dunkle Darstellung</h3>
+        <p>Jede Farbe hat einen Dunkelwert. Der Grund ist nicht der Akku, sondern der Griff zum Rettungsring um drei Uhr nachts: ein fast weißer Bildschirm ins Gesicht ist das Gegenteil dessen, wofür die App da ist. Du kannst hell, dunkel oder Systemeinstellung wählen.</p>
+
+        <h3>Reduzierte Bewegung</h3>
+        <p>Der Hintergrund hört auf zu driften, Auftritte werden zu einfachen Blenden, der Marker im Klopfdiagramm blendet um, statt zu wandern. Eine Ausnahme bleibt bewusst: Der Atemkreis atmet weiter, denn seine Bewegung ist die Anweisung und kein Schmuck.</p>
+
+        <h3>Mitlesen</h3>
+        <p>Jeder gesprochene Satz steht gleichzeitig als Text auf dem Bildschirm. Die Übungen funktionieren vollständig lautlos.</p>
+
+        <h3>Was noch fehlt</h3>
+        <p>Die Bedienung per Sprachsteuerung ist nicht geprüft, deshalb behaupten wir sie auch nicht. Audiodeskription gibt es nicht, weil es kein Video gibt.</p>
+    </section>
+
+    <section id="en" lang="en">
+        <h2>English</h2>
+        <p>Accessibility in VAYA is part of the design, not a pass at the end. The app is built so you can close your eyes.</p>
+
+        <h3>VoiceOver</h3>
+        <p>Every change of step during a practice is announced, even with the spoken guidance switched off. Without that, guided minutes would be silent for anyone not looking at the screen. Sliders, selection lists and the tapping body diagram carry written descriptions rather than generic ones.</p>
+
+        <h3>Larger Text</h3>
+        <p>Every screen follows the system text size, including the timed practices. At the largest settings the layout rebuilds rather than truncates: runners become scrollable and fixed heights give way.</p>
+
+        <h3>Contrast and colour</h3>
+        <p>The app’s surface tints are meant for areas, not for text. There is a second, darker set of the same hues for type alone, and the values are calculated rather than estimated. No information depends on colour by itself.</p>
+
+        <h3>Dark interface</h3>
+        <p>Every colour has a dark value. The reason is not battery life but reaching for the lifeline at three in the morning: a near-white screen in the face is the opposite of what this app is for. You can choose light, dark, or the system setting.</p>
+
+        <h3>Reduced motion</h3>
+        <p>The background stops drifting, entrances collapse to plain fades, and the marker on the tapping diagram cross-fades instead of travelling. One exception is deliberate: the breathing orb keeps breathing, because its movement is the instruction, not decoration.</p>
+
+        <h3>Reading along</h3>
+        <p>Every spoken line appears on screen at the same time. The practices work completely silently.</p>
+
+        <h3>What is still missing</h3>
+        <p>Operating the app by Voice Control has not been verified, so we do not claim it. There are no audio descriptions because there is no video.</p>
+    </section>
+
+    <footer>
+        <p><a href="../">Datenschutz &amp; Impressum</a> · <a href="../haltung/">Haltung</a> · <a href="../rettungsring/">Neunzig Sekunden ausprobieren</a></p>
+    </footer>
+</main>
+</body>
+</html>
